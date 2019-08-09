@@ -2,7 +2,16 @@
 	"name": "mobbing-tools",
 	"displayName": "Mobbing Tools",
 	"description": "A collection of tools to aid in mob programming",
-	"version": "0.0.1",
+	"publisher": "sreed101",
+	"homepage": "https://github.com/sreed101/Mobbing-Tools/blob/master/README.md",
+	"repository": {
+        "type": "git",
+        "url": "https://github.com/sreed101/Mobbing-Tools.git"
+    },
+    "bugs": {
+        "url": "https://github.com/sreed101/Mobbing-Tools/issues"
+    },
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
