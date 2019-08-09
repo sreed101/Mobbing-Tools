@@ -70,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const data = JSON.parse(match[1]);
 				data.reverse();
 				data.forEach((file: any, index: number) => {
-					const uri = vscode.Uri.parse(vscode.workspace.rootPath + '/' + file[0]);
+					const uri = vscode.Uri.parse('file://' + vscode.workspace.rootPath + '/' + file[0], true);
 					vscode.workspace.openTextDocument(uri).then((documentHandle: vscode.TextDocument) => {
 						vscode.window.showTextDocument(documentHandle, {
 							preview: false,
