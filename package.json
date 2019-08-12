@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/sreed101/Mobbing-Tools/issues"
     },
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
@@ -21,7 +21,7 @@
 	"activationEvents": [
 		"*",
 		"onCommand:mobTools.commitMessage",
-		"onCommand:mobTools.gitPull"
+		"onCommand:mobTools.gitParse"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -58,8 +58,8 @@
 				"category": "[MOB]"
 			},
 			{
-				"command": "mobTools.gitPull",
-				"title": "Git: Pull",
+				"command": "mobTools.gitParse",
+				"title": "Log Parse",
 				"category": "[MOB]"
 			}
 		],

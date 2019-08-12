@@ -57,11 +57,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
-	let gitPull = vscode.commands.registerCommand('mobTools.gitPull', () => {
-		exec('git pull && git log --pretty=format:%s -1', {cwd: vscode.workspace.rootPath}, (err, stdout, stderr) => {
-			
+	let gitParse = vscode.commands.registerCommand('mobTools.gitParse', () => {
+		exec('git log --pretty=format:%s -1', {cwd: vscode.workspace.rootPath}, (err, stdout, stderr) => {
 			if (err || stderr) {
-				// TODO: throw error
+				throw err ? err : stderr;
 			}
 
 			// @TODO: Throw error if invalid json
@@ -70,7 +69,6 @@ export function activate(context: vscode.ExtensionContext) {
 				const data = JSON.parse(match[1]);
 				data.reverse();
 				data.forEach((file: any, index: number) => {
-					console.log(vscode.workspace.rootPath + '/' + file[0]);
 					const uri = vscode.Uri.file(vscode.workspace.rootPath + '/' + file[0]);
 					vscode.workspace.openTextDocument(uri).then((documentHandle: vscode.TextDocument) => {
 						vscode.window.showTextDocument(documentHandle, {
@@ -90,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(commitMessage);
-	context.subscriptions.push(gitPull);
+	context.subscriptions.push(gitParse);
 
 	activeTextEditorChangeDisposer = vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor, null, context.subscriptions);
 	documentChangeListenerDisposer = vscode.workspace.onDidChangeTextDocument(onDidChangeTextDocument);
