@@ -2,7 +2,12 @@
 	"name": "mobbing-tools",
 	"displayName": "Mobbing Tools",
 	"description": "A collection of tools to aid in mob programming",
+	"author": {
+        "name": "Scott Reed",
+        "email": "sreed@meetsoci.com"
+    },
 	"publisher": "sreed101",
+	"license": "SEE LICENSE IN LICENSE",
 	"homepage": "https://github.com/sreed101/Mobbing-Tools/blob/master/README.md",
 	"repository": {
         "type": "git",
@@ -11,7 +16,7 @@
     "bugs": {
         "url": "https://github.com/sreed101/Mobbing-Tools/issues"
     },
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
