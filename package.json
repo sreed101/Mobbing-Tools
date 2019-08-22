@@ -16,7 +16,7 @@
     "bugs": {
         "url": "https://github.com/sreed101/Mobbing-Tools/issues"
     },
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
@@ -37,7 +37,7 @@
 				"mobTools.pattern": {
 					"type": "string",
 					"default": "(SO-[0-9]*)",
-					"description": "A regular expression to extract from branch name. Should match entire branch."
+					"description": "A regular expression to extract from the branch name the ticket number."
 				},
 				"mobTools.patternIgnoreCase": {
 					"type": "boolean",
@@ -52,7 +52,7 @@
 				"mobTools.mobTime": {
 					"type": "number",
 					"default": 15,
-					"description": "Pull file changes from the past X minutes (recommended to be slightly higher than your standard mob time)."
+					"description": "Pull file changes from the past X minutes into the commit message, this is recommended to be slightly higher than your standard mobbing time."
 				}
 			}
 		},

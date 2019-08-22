@@ -1,13 +1,37 @@
-# mobbing-tools README
+## Instructions
+Prefix your branch with the JIRA ticket number (eg. SO-10412-Block-Ready-To-Be-Published) for it to be parsed into the commit message.
 
-Mobbing Tools for SOCi
+Click the "MOB" button on the source control pane to populate the commit message with the files you have changed recently. Your commit message will be retained.
+```
+	[SO-9749] Remove extra tabs ╠[["soci/classes/ads/Facebook/Publish/FacebookAdPublishCustomAudience.php",396,41]]╣
+```
 
-# Instructions
-Prefix your branch with the ticket number (eg. SO-9748).
+When it is your turn to drive, execute a git pull and then run "[MOB] Log Parse" from the actions pane to open the files in the last commits message to the specified line numbers. 
 
-Click the "MOB" button on the source control pane to populate the commit message.
+## Available Settings
 
-When it is your turn to drive, do a git pull and then execute "[MOB] Log Parse" from the actions pane.
+* Pull file changes from the past X minutes into the commit message, this is recommended to be slightly higher than your standard mobbing time.
+```json
+    "mobTools.mobTime": 15
+```
 
-# Installation
+* A regular expression to extract from the branch name the ticket number.
+```json
+    "mobTools.pattern": "(SO-[0-9]*)"
+```
+
+* Ignore case in pattern.
+```json
+    "mobTools.patternIgnoreCase": false
+```
+
+* Content to place in commit message.
+```json
+    "mobTools.replacement": "[$1] "
+```
+
+## Coming Soon
+- Storing breakpoints
+
+## Installation
 https://marketplace.visualstudio.com/items?itemName=sreed101.mobbing-tools
