@@ -1,4 +1,7 @@
 ## Instructions
+
+![Demo](images/demo.gif)
+
 Prefix your branch with the JIRA ticket number (eg. SO-10412-Block-Ready-To-Be-Published) for it to be parsed into the commit message.
 
 Click the "MOB" button on the source control pane to populate the commit message with the files you have changed recently. Your commit message will be retained.
@@ -32,6 +35,7 @@ When it is your turn to drive, execute a git pull and then run "[MOB] Log Parse"
 
 ## Coming Soon
 - Storing breakpoints
+- PHPStorm Plugin
 
 ## Installation
 https://marketplace.visualstudio.com/items?itemName=sreed101.mobbing-tools
