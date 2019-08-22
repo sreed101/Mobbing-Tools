@@ -2,11 +2,11 @@
 
 ![Demo](images/demo.gif)
 
-Prefix your branch with the JIRA ticket number (eg. SO-10412-Block-Ready-To-Be-Published) for it to be parsed into the commit message.
+Prefix your branch with the JIRA ticket number (eg. SO-1001-Remove-Whitespace) for it to be parsed into the commit message.
 
 Click the "MOB" button on the source control pane to populate the commit message with the files you have changed recently. Your commit message will be retained.
 ```
-[SO-9749] Remove extra tabs ╠[["soci/classes/ads/Facebook/Publish/FacebookAdPublishCustomAudience.php",396,41]]╣
+[SO-1001] Remove extra tabs ╠[["index.php",396,41]]╣
 ```
 
 When it is your turn to drive, execute a git pull and then run "[MOB] Log Parse" from the actions pane to open the files in the last commits message to the specified line numbers. 
