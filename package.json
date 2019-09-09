@@ -16,7 +16,7 @@
     "bugs": {
         "url": "https://github.com/sreed101/Mobbing-Tools/issues"
     },
-	"version": "1.0.12",
+	"version": "1.0.13",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
@@ -54,6 +54,11 @@
 					"type": "number",
 					"default": 15,
 					"description": "Pull file changes from the past X minutes into the commit message, this is recommended to be slightly higher than your standard mobbing time."
+				},
+				"mobTools.unitRegex": {
+					"type": "string",
+					"default": "^soci/spec/unit.*php",
+					"description": "Regular expression to search the git log for unit tests"
 				}
 			}
 		},
