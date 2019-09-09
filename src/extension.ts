@@ -31,6 +31,31 @@ function revealPosition(line: number, column: number) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+	let taskCommand: string;
+	let runUnits = vscode.commands.registerCommand('mobTools.runUnits', async (uri?) => {
+		exec('git log upstream/master..  --name-only  --oneline | grep \'^soci/spec/unit.*\.php\' | uniq', {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
+			if (err || stderr) {
+				throw err ? err : stderr;
+			}
+
+			const config = vscode.workspace.getConfiguration("phpunit");
+			let dockerContainer = config.get("docker.container");
+			if (!dockerContainer) {
+				vscode.window.showInformationMessage(`No docker container in config.`);
+				return;
+			}
+
+			let files = stdout.split('\n').filter((el) => el);
+			files = files.map(file => `$(grep -Po 'class \\K\\w(.*) extends' /var/www/${file} | cut -d' ' -f1)`);
+
+			taskCommand = `docker exec -t ${dockerContainer} php /usr/local/bin/phpunit-8.0.6.phar --filter "${files.join('|')}"`;
+			await vscode.commands.executeCommand("workbench.action.terminal.clear");
+			await vscode.commands.executeCommand(
+				"workbench.action.tasks.runTask",
+				"mobunit: run"
+			  );
+		});
+	});
 
 	let commitMessage = vscode.commands.registerCommand('mobTools.commitMessage', async (uri?) => {
 		const git = getGitExtension();
@@ -87,8 +112,27 @@ export function activate(context: vscode.ExtensionContext) {
 		// TODO: PhpStorm Plugin
 	});
 
+	context.subscriptions.push(runUnits);
 	context.subscriptions.push(commitMessage);
 	context.subscriptions.push(gitParse);
+
+	context.subscriptions.push(
+		vscode.tasks.registerTaskProvider("mobunit", {
+		  provideTasks: () => {
+			return [
+			  new vscode.Task(
+				{ type: "mobunit", task: "run" },
+				vscode.TaskScope.Workspace,
+				"run",
+				"mobunit",
+				new vscode.ShellExecution(taskCommand),
+				"$phpunit-app"
+			  )
+			];
+		  },
+		  resolveTask: () => undefined
+		})
+	  );
 
 	activeTextEditorChangeDisposer = vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor, null, context.subscriptions);
 	documentChangeListenerDisposer = vscode.workspace.onDidChangeTextDocument(onDidChangeTextDocument);
