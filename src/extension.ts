@@ -33,7 +33,7 @@ function revealPosition(line: number, column: number) {
 export function activate(context: vscode.ExtensionContext) {
 	let taskCommand: string;
 	let runUnits = vscode.commands.registerCommand('mobTools.runUnits', async (uri?) => {
-		exec('git log upstream/master..  --name-only  --oneline | grep \'^soci/spec/unit.*\.php\' | uniq', {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
+		exec('git log upstream/master..  --name-only  --oneline | grep \'^soci/spec/unit.*php\' | uniq', {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
 			if (err || stderr) {
 				throw err ? err : stderr;
 			}
@@ -48,7 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
 			let files = stdout.split('\n').filter((el) => el);
 			files = files.map(file => `$(grep -Po 'class \\K\\w(.*) extends' /var/www/${file} | cut -d' ' -f1)`);
 
-			taskCommand = `docker exec -t ${dockerContainer} php /usr/local/bin/phpunit-8.0.6.phar --filter "${files.join('|')}"`;
+			taskCommand = `docker exec -t ${dockerContainer} //bin//bash -c "php /usr/local/bin/phpunit-8.0.6.phar --filter \\"${files.join('|')}\\""`;
+			console.log(taskCommand);
 			await vscode.commands.executeCommand("workbench.action.terminal.clear");
 			await vscode.commands.executeCommand(
 				"workbench.action.tasks.runTask",
