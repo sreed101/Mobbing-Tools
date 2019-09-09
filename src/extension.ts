@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let taskCommand: string;
 	let runUnits = vscode.commands.registerCommand('mobTools.runUnits', async (uri?) => {
 		const unitRegex: string = vscode.workspace.getConfiguration().get("mobTools.unitRegex") || '^soci/spec/unit.*php';
-		exec(`git log upstream/master..  --name-only  --oneline | grep \'${unitRegex}\' | uniq`, {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
+		exec(`git log upstream/master..  --name-only  --oneline | grep '${unitRegex}' | uniq`, {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
 			if (err || stderr) {
 				throw err ? err : stderr;
 			}
