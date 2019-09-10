@@ -15,6 +15,8 @@ let openFiles: OpenFilesInterface[] = [];
 let activeEditor = vscode.window.activeTextEditor;
 let documentChangeListenerDisposer: vscode.Disposable;
 let activeTextEditorChangeDisposer: vscode.Disposable;
+let customTaskProvider: vscode.Disposable | undefined;
+let mobUnitTaskCommand: string;
 
 // Taken from https://github.com/alefragnani/vscode-bookmarks/blob/master/src/extension.ts
 function revealPosition(line: number, column: number) {
@@ -31,7 +33,6 @@ function revealPosition(line: number, column: number) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-	let taskCommand: string;
 	let runUnits = vscode.commands.registerCommand('mobTools.runUnits', async (uri?) => {
 		const unitRegex: RegExp = new RegExp(
 			<string> (vscode.workspace.getConfiguration().get("mobTools.unitRegex") || "(?<=\\n)soci\/spec\/unit(?:(?!.php).)*\\.php\\n"),
@@ -68,12 +69,12 @@ export function activate(context: vscode.ExtensionContext) {
 				phpUnitPhar = phpUnitPhar.replace(path, config.paths[path]);
 			});
 
-			taskCommand = `docker exec -t ${dockerContainer} //bin//bash -c "php ${phpUnitPhar} --filter \\"${files.join('|')}\\""`;
+			mobUnitTaskCommand = `docker exec -t ${dockerContainer} //bin//bash -c "php ${phpUnitPhar} --filter \\"${files.join('|')}\\""`;
 
 			await vscode.commands.executeCommand("workbench.action.terminal.clear");
 			await vscode.commands.executeCommand(
 				"workbench.action.tasks.runTask",
-				"mobunit: run"
+				"mobunit: rununits"
 			  );
 		});
 	});
@@ -137,23 +138,27 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(commitMessage);
 	context.subscriptions.push(gitParse);
 
-	context.subscriptions.push(
-		vscode.tasks.registerTaskProvider("mobunit", {
-		  provideTasks: () => {
-			return [
-			  new vscode.Task(
-				{ type: "mobunit", task: "run" },
-				vscode.TaskScope.Workspace,
-				"run",
+	customTaskProvider = vscode.tasks.registerTaskProvider("mobunit", {
+		provideTasks: (token?: vscode.CancellationToken) => {
+		console.log('provideTasks mobunit', mobUnitTaskCommand);
+		return [
+			new vscode.Task(
+				{
+					type: "mobunit",
+					task: "rununit"
+				},
+				2,
+				"rununits",
 				"mobunit",
-				new vscode.ShellExecution(taskCommand),
-				"$phpunit-app"
-			  )
-			];
-		  },
-		  resolveTask: () => undefined
-		})
-	  );
+				new vscode.ShellExecution(mobUnitTaskCommand),
+				["$phpunit-app"]
+			)
+		];
+		},
+		resolveTask: (task) => {
+			return undefined;
+		}
+	});
 
 	activeTextEditorChangeDisposer = vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor, null, context.subscriptions);
 	documentChangeListenerDisposer = vscode.workspace.onDidChangeTextDocument(onDidChangeTextDocument);
@@ -245,4 +250,8 @@ function getGitExtension() {
 	return gitExtension && gitExtension.getAPI(1);
 }
 
-export function deactivate() {}
+export function deactivate() {
+	if (customTaskProvider) {
+		customTaskProvider.dispose();
+	}
+}

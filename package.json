@@ -16,7 +16,7 @@
     "bugs": {
         "url": "https://github.com/sreed101/Mobbing-Tools/issues"
     },
-	"version": "1.0.20",
+	"version": "1.0.21",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
@@ -27,7 +27,8 @@
 		"*",
 		"onCommand:mobTools.commitMessage",
 		"onCommand:mobTools.gitParse",
-		"onCommand:mobTools.runUnits"
+		"onCommand:mobTools.runUnits",
+		"onCommand:workbench.action.tasks.runTask"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -87,7 +88,68 @@
 					"group": "navigation"
 				}
 			]
+		},
+		"problemMatchers": [
+		{
+		  "name": "phpunit",
+		  "owner": "php",
+		  "fileLocation": "absolute",
+		  "pattern": [
+			{
+			  "regexp": "^\\d+\\)\\s.*$"
+			},
+			{
+			  "regexp": "^(.*)$",
+			  "message": 1
+			},
+			{
+			  "regexp": "[\\r\\n]*"
+			},
+			{
+			  "regexp": "^(.*):(\\d+)$",
+			  "file": 1,
+			  "location": 2
+			}
+		  ]
+		},
+		{
+		  "name": "phpunit-app",
+		  "owner": "php",
+		  "fileLocation": "absolute",
+		  "pattern": [
+			{
+			  "regexp": "^(.*)$",
+			  "message": 1
+			},
+			{
+			  "regexp": "^(.*)$",
+			  "message": 1
+			},
+			{
+			  "regexp": "^\\s*$"
+			},
+			{
+			  "regexp": "^(.*):(\\d+)$",
+			  "file": 1,
+			  "location": 2
+			}
+		  ]
 		}
+	  ],
+	  "taskDefinitions": [
+		{
+		  "type": "mobunit",
+		  "required": [
+			"task"
+		  ],
+		  "properties": {
+			"task": {
+			  "type": "string",
+			  "description": "The task to execute"
+			}
+		  }
+		}
+	  ]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
