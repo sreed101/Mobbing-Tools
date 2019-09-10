@@ -1,3 +1,5 @@
+[Mob programming](https://en.wikipedia.org/wiki/Mob_programming) with remote teams poses a challenge for switching drivers. It can take time to restore the editor state from one driver to the next. This can cause frustration and interupt the flow state of the mob. One option is to have all participants remotely control a machine, but this poses many problems of its own, including input delay. This VSCode extension inserts itself into the mobbing workflow of using git to commit, push and pull code. It adds a button to save the current IDE state into the git commit mesage. The next driver can then run a command within the extension to restore their editor to the state of the previous driver based on the commit message, including opening files and restoring cursor positions. This saves time, reduces frustration and keeps the mob in a flow state.
+
 ## Instructions
 
 ![Demo](images/demo.gif)
