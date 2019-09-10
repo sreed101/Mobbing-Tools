@@ -33,11 +33,24 @@ function revealPosition(line: number, column: number) {
 export function activate(context: vscode.ExtensionContext) {
 	let taskCommand: string;
 	let runUnits = vscode.commands.registerCommand('mobTools.runUnits', async (uri?) => {
-		const unitRegex: string = vscode.workspace.getConfiguration().get("mobTools.unitRegex") || '^soci/spec/unit.*php';
-		exec(`git log upstream/master..  --name-only  --oneline | grep '${unitRegex}' | uniq`, {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
+		const unitRegex: RegExp = new RegExp(
+			<string> (vscode.workspace.getConfiguration().get("mobTools.unitRegex") || "(?<=\\n)soci\/spec\/unit(?:(?!.php).)*\\.php\\n"),
+			"g"
+		);
+		exec(`git log upstream/master..  --name-only  --oneline`, {cwd: vscode.workspace.rootPath}, async (err, stdout, stderr) => {
 			if (err || stderr) {
 				throw err ? err : stderr;
 			}
+
+			stdout = stdout.replace('\n', '\r\n');
+
+			let regexpMatch = stdout.match(unitRegex);
+			if (!regexpMatch) {
+				vscode.window.showInformationMessage(`No tests found in git log.`);
+				return;
+			}
+			regexpMatch = regexpMatch.map(match => match.replace('\n', ''));
+			let files = Array.from(new Set(regexpMatch));
 
 			const config = vscode.workspace.getConfiguration("phpunit");
 			let dockerContainer = config.get("docker.container");
@@ -46,10 +59,17 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 
-			let files = stdout.split('\n').filter((el) => el);
-			files = files.map(file => `$(grep -Po 'class \\K\\w(.*) extends' ${vscode.workspace.rootPath}/${file} | cut -d' ' -f1)`);
+			let rootPath = vscode.workspace.rootPath || '/var/www';
+			rootPath = rootPath.replace(/\\/g, '/'); // windows fix
+			files = files.map(file => `$(grep -Po 'class \\K\\w(.*) extends' ${rootPath}/${file} | cut -d' ' -f1)`);
 
-			taskCommand = `docker exec -t ${dockerContainer} //bin//bash -c "php /usr/local/bin/phpunit-8.0.6.phar --filter \\"${files.join('|')}\\""`;
+			let phpUnitPhar = config.phpunit;
+			Object.keys(config.paths).forEach(path => {
+				phpUnitPhar = phpUnitPhar.replace(path, config.paths[path]);
+			});
+
+			taskCommand = `docker exec -t ${dockerContainer} //bin//bash -c "php ${phpUnitPhar} --filter \\"${files.join('|')}\\""`;
+
 			await vscode.commands.executeCommand("workbench.action.terminal.clear");
 			await vscode.commands.executeCommand(
 				"workbench.action.tasks.runTask",

@@ -16,7 +16,7 @@
     "bugs": {
         "url": "https://github.com/sreed101/Mobbing-Tools/issues"
     },
-	"version": "1.0.14",
+	"version": "1.0.20",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
@@ -57,7 +57,7 @@
 				},
 				"mobTools.unitRegex": {
 					"type": "string",
-					"default": "^soci/spec/unit.*php",
+					"default": "(?<=\\n)soci\/spec\/unit(?:(?!.php).)*\\.php\\n",
 					"description": "Regular expression to search the git log for unit tests"
 				}
 			}
